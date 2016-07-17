@@ -4,7 +4,11 @@
   "description": "iDevJS api server built on koa2",
   "main": "app.js",
   "scripts": {
-    "test": "npm run test"
+    "test": "npm run test",
+    "debug": "npm run clean && node bin/debug",
+    "dev": "babel api/ --watch --out-dir app/ --retain-lines --source-maps",
+    "compile": "babel api/ --out-dir app/ --retain-lines --source-maps",
+    "clean": "rm -rf app/"
   },
   "repository": {
     "type": "git",
@@ -31,12 +35,29 @@
     "koa": "^2.0.0-alpha.3",
     "koa-compose": "^3.1.0",
     "koa-compress": "^2.0.0",
+    "koa-convert": "^1.2.0",
     "koa-jsonp": "^2.0.2",
+    "koa-logger": "^2.0.0",
     "koa-mount": "^2.0.0",
     "koa-router": "^7.0.1",
     "koa-static": "^3.0.0",
     "koa-views": "^5.0.2",
     "mongodb": "^2.1.21",
     "mongoose": "^4.4.11"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-plugin-transform-async-to-generator": "^6.8.0",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.8.0",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015-node6": "^0.2.0",
+    "chokidar": "^1.6.0",
+    "colors": "^1.1.2",
+    "debug": "^2.2.0",
+    "eslint": "^3.1.0",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-config-standard": "^5.3.5",
+    "eslint-plugin-react": "^5.2.2",
+    "eslint-plugin-standard": "^2.0.0"
   }
 }

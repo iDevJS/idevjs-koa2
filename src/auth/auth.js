@@ -3,22 +3,26 @@ import path from 'path'
 import Koa from 'koa'
 import logger from 'koa-logger'
 import compress from 'koa-compress'
+import serve from 'koa-static'
 import router from 'koa-router'
 import views from 'koa-views'
 
 const env = process.env.NODE_ENV || 'development'
-const api = new Koa()
+const auth = new Koa()
 
-if ('test' != env) api.use(logger())
+// serve static
+auth.use(serve('./asserts'))
+
 // logger
-api.use(async (ctx, next) => {
+if ('test' != env) auth.use(logger())
+auth.use(async (ctx, next) => {
   const start = new Date()
   await next()
   const ms = new Date() - start
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
-}) 
+})
 // error handler
-api.use(async (ctx, next) => {
+auth.use(async (ctx, next) => {
   try {
     await next()
   } catch (err) {
@@ -29,16 +33,16 @@ api.use(async (ctx, next) => {
   }
 })
 // error logger
-api.on('error', async (err, ctx) => {
+auth.on('error', async (err, ctx) => {
   console.log('error occured:', err)
 })
 
-api.use(compress())
+auth.use(compress())
 
-api.use(ctx => {
+auth.use(ctx => {
   ctx.body = {
-    data: "welcome to idevjs.com api server"
+    data: "welcome to idevjs.com auth server"
   }
 })
 
-export default api
+export default auth

@@ -16,7 +16,7 @@ api.use(async (ctx, next) => {
   await next()
   const ms = new Date() - start
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
-}) 
+})
 // error handler
 api.use(async (ctx, next) => {
   try {
