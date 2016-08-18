@@ -9,6 +9,6 @@ app.use(mount('/v2', api))
 app.use(mount('/auth', auth))
 
 const server = http.createServer(app.callback())
-server.listen(8080)
+server.listen(8000)
 
 export default app

@@ -4,8 +4,8 @@ import Koa from 'koa'
 import logger from 'koa-logger'
 import compress from 'koa-compress'
 import serve from 'koa-static'
-import router from 'koa-router'
 import views from 'koa-views'
+import routes from './routes'
 
 const env = process.env.NODE_ENV || 'development'
 const auth = new Koa()
@@ -39,10 +39,6 @@ auth.on('error', async (err, ctx) => {
 
 auth.use(compress())
 
-auth.use(ctx => {
-  ctx.body = {
-    data: "welcome to idevjs.com auth server"
-  }
-})
+auth.use(routes.routes())
 
 export default auth
