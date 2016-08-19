@@ -2,7 +2,7 @@ import marked from 'marked'
 
 export default {
   getPost: async (ctx, next) => {
-    ctx.body = 'post list'
+    ctx.body = ctx
   },
   addPost: async (ctx, next) => {
 
@@ -11,7 +11,7 @@ export default {
 
   },
   listPost: async (ctx, next) => {
-
+    ctx.body = 'post list'
   },
   nodePost: async (ctx, next) => {
 

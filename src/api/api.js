@@ -1,17 +1,19 @@
-import http from 'http'
-import path from 'path'
 import Koa from 'koa'
 import logger from 'koa-logger'
 import compress from 'koa-compress'
-import views from 'koa-views'
+import mongoose from 'mongoose'
+import config from '../../config'
 import log from './middlewares/logger'
 import error from './middlewares/error'
 import router from './routes/index'
 
+mongoose.connect(`mongodb:${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`)
+mongoose.connection.on('error', console.error)
+
 const env = process.env.NODE_ENV || 'development'
 const api = new Koa()
 
-if ('test' != env) api.use(logger())
+if (env !== 'test') api.use(logger())
 // logger
 api.use(log)
 // error handler
@@ -27,7 +29,7 @@ api.use(compress())
 
 api.use(ctx => {
   ctx.body = {
-    data: "welcome to idevjs.com api server"
+    data: 'welcome to idevjs.com api server'
   }
 })
 

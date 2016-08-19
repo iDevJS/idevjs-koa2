@@ -1,6 +1,10 @@
 {
-    "extends": "standard",
-    "plugins": [
-        "standard"
-    ]
+  "parser": "babel-eslint",
+  "extends": "standard",
+  "ecmaFeatures": {
+    "arrowFunctions": true
+  },
+  "plugins": [
+    "standard"
+  ]
 }
