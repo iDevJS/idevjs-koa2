@@ -1,11 +1,20 @@
 import marked from 'marked'
+import Post from '../models/posts'
 
 export default {
   getPost: async (ctx, next) => {
-    ctx.body = ctx
+    const post = await Post.find({_id: ctx.params.pid})
+    ctx.body = post
+    console.log('aha')
   },
   addPost: async (ctx, next) => {
-
+    const post = new Post(ctx.request.body)
+    try {
+      await post.save()
+    } catch (err) {
+      ctx.throw(422, err.message)
+    }
+    ctx.body = post
   },
   updatePost: async (ctx, next) => {
 
