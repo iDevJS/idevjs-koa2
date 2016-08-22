@@ -1,6 +1,7 @@
 import Koa from 'koa'
 import logger from 'koa-logger'
 import compress from 'koa-compress'
+import bodyParser from 'koa-bodyparser'
 import mongoose from 'mongoose'
 // import config from '../../config'
 import log from './middlewares/logger'
@@ -16,23 +17,11 @@ const env = process.env.NODE_ENV || 'development'
 const api = new Koa()
 
 if (env !== 'test') api.use(logger())
-// logger
-api.use(log)
-// error handler
-api.use(errorMiddleware())
-
-api.on('error', async (err, ctx) => {
-  console.log('error occured:', err)
-})
-
-api.use(router.routes())
-
+api.use(bodyParser())
 api.use(compress())
 
-api.use(ctx => {
-  ctx.body = {
-    data: 'welcome to idevjs.com api server'
-  }
-})
+api.use(log)
+api.use(errorMiddleware())
+api.use(router.routes())
 
 export default api

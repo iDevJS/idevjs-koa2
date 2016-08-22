@@ -5,10 +5,10 @@ export default {
   getPost: async (ctx, next) => {
     const post = await Post.find({_id: ctx.params.pid})
     ctx.body = post
-    console.log('aha')
   },
   addPost: async (ctx, next) => {
     const post = new Post(ctx.request.body)
+    console.log(post)
     try {
       await post.save()
     } catch (err) {
