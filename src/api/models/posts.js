@@ -16,11 +16,11 @@ const Post = new mongoose.Schema({
   }
 })
 
-Post.pre('save', function preSave(next) {
+Post.pre('save', (next) => {
 
 })
 
-Post.methods.validate = function validate() {
+Post.methods.validate = () => {
 
 }
 

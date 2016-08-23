@@ -3,14 +3,20 @@ import Post from '../models/posts'
 
 export default {
   getPost: async (ctx, next) => {
-    const post = await Post.find({_id: ctx.params.pid})
-    ctx.body = post
+    await Post.find({ _id: ctx.params.pid }).exec().then(ret => {
+      ctx.body = ret
+    }).catch(err => {
+      console.log(err)
+    })
   },
   addPost: async (ctx, next) => {
     const post = new Post(ctx.request.body)
-    console.log(post)
     try {
-      await post.save()
+      await post.save().then((ret) => {
+        console.log(ret)
+      }).catch(err => {
+        console.log(err)
+      })
     } catch (err) {
       ctx.throw(422, err.message)
     }
