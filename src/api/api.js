@@ -3,13 +3,12 @@ import logger from 'koa-logger'
 import compress from 'koa-compress'
 import bodyParser from 'koa-bodyparser'
 import mongoose from 'mongoose'
-// import config from '../../config'
+import config from './config/dev'
 import log from './middlewares/logger'
 import errorMiddleware from './middlewares/error'
 import router from './routes/index'
 
-// mongoose.connect(`mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`)
-mongoose.connect('mongodb://localhost:27017/idevjs')
+mongoose.connect(`mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`)
 mongoose.connection.on('error', console.error)
 mongoose.Promise = global.Promise
 
