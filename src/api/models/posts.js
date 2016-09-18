@@ -1,11 +1,12 @@
 import mongoose from 'mongoose'
+import marked from 'marked'
 
 const postSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true
   },
-  node: {
+  node_name: {
     type: String,
     required: true
   },
@@ -13,7 +14,7 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  author: {
+  author_name: {
     type: String,
     required: true
   },
@@ -26,11 +27,11 @@ const postSchema = new mongoose.Schema({
     required: true,
     enum: ['html', 'markdown']
   },
-  create_at: {
+  created_at: {
     type: Date,
     default: Date.now
   },
-  update_at: {
+  updated_at: {
     type: Date,
     default: Date.now
   },
@@ -48,29 +49,37 @@ const postSchema = new mongoose.Schema({
       default: 0
     }
   }
+}, {
+  id: false
 })
 
-var virtual = postSchema.virtual('author', {
+postSchema.set('toObject', { virtuals: true })
+postSchema.set('toJSON', { virtuals: true })
+
+postSchema.virtual('author', {
   ref: 'User',
-  localField: 'name',
-  foreignField: 'author',
+  localField: 'author_name',
+  foreignField: 'name',
   justOne: true
 })
-console.log(virtual)
-virtual.get(function(){
-  return this
+
+postSchema.virtual('last_comment_user', {
+  ref: 'User',
+  localField: 'last_comment_by',
+  foreignField: 'name',
+  justOne: true
 })
 
 postSchema.virtual('node', {
   ref: 'Node',
-  localField: 'name',
-  foreignField: 'node',
+  localField: 'node_name',
+  foreignField: 'name',
   justOne: true
 })
 
-// Post.pre('save', (next) => {
-//   console.log(this)
-// })
+postSchema.pre('save', (next) => {
+  next()
+})
 
 // Post.methods.validate = () => {
 
