@@ -49,12 +49,15 @@
     "mongoose": "^4.6.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.10.1",
+    "babel-cli": "^6.14.0",
+    "babel-core": "^6.14.0",
     "babel-eslint": "^6.1.2",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-plugin-transform-es2015-arrow-functions": "^6.8.0",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-polyfill": "^6.9.1",
     "babel-preset-es2015-node6": "^0.2.0",
+    "babel-preset-latest": "^6.14.0",
     "chokidar": "^1.6.0",
     "colors": "^1.1.2",
     "debug": "^2.2.0",

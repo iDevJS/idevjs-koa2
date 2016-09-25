@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import marked from 'marked'
 
 const postSchema = new mongoose.Schema({
   title: {
@@ -49,9 +48,10 @@ const postSchema = new mongoose.Schema({
       default: 0
     }
   }
-}, {
-  id: false
-})
+},
+  {
+    id: false
+  })
 
 postSchema.set('toObject', { virtuals: true })
 postSchema.set('toJSON', { virtuals: true })
@@ -76,6 +76,25 @@ postSchema.virtual('node', {
   foreignField: 'name',
   justOne: true
 })
+
+postSchema.statics.paginate = function (query, opt) {
+  let defs = Object.assign({}, { page: 1, per_page: 20 }, opt)
+  const offset = (parseInt(defs.page, 10) - 1) * parseInt(defs.per_page)
+
+  let sort = { last_comment_at: -1, updated_at: -1 }
+  if (opt.tab === 'hot') {
+    sort = { 'meta.comments': -1 }
+  } else if (opt.tab === 'new') {
+    sort = { created_at: -1 }
+  } else if (opt.tab === 'recommend') {
+    query.recommend = true
+  } else if (opt.tab === 'job') {
+    query.tab = 'job'
+  }
+
+  // since, before, one day/week/month
+  return this.find(query).sort(sort).skip(offset).limit(parseInt(defs.per_page))
+}
 
 postSchema.pre('save', (next) => {
   next()

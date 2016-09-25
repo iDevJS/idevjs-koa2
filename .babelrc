@@ -7,5 +7,8 @@
   "presets": [
     "babel-preset-es2015-node5"
   ],
-  "plugins": ["transform-async-to-generator"]
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-async-to-generator"
+  ]
 }

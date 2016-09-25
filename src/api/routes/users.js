@@ -7,7 +7,7 @@ const router = new Router()
 
 router
   .get('/:name', users.getUser)
-  .get('/:name/post', posts.userPost)
-  .get('/:name/comment', comments.userComment)
+  .get('/:name/post', posts.listUserPost)
+  .get('/:name/comment', comments.listUserComment)
 
 export default router

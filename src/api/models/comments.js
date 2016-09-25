@@ -1,38 +1,49 @@
 import mongoose from 'mongoose'
 
-const commentSchema = new mongoose.Schema({
-  author_name: {
-    type: String,
-    required: true
-  },
-  content: {
-    type: String,
-    required: true
-  },
-  content_format: {
-    type: String,
-    required: true,
-    enum: ['html', 'markdown']
-  },
-  created_at: {
-    type: Date,
-    default: Date.now
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now
-  },
-  meta: {
-    downvotes: {
-      type: Array
+const commentSchema = new mongoose.Schema(
+  {
+    pid: {
+      type: String,
+      required: true
     },
-    upvotes: {
-      type: Array
+    author_name: {
+      type: String,
+      required: true
+    },
+    content: {
+      type: String,
+      required: true
+    },
+    content_format: {
+      type: String,
+      default: 'markdown',
+      enum: ['html', 'markdown']
+    },
+    hidden: {
+      type: Boolean,
+      default: false
+    },
+    created_at: {
+      type: Date,
+      default: Date.now
+    },
+    updated_at: {
+      type: Date,
+      default: Date.now
+    },
+    meta: {
+      downvotes: {
+        type: Array
+      },
+      upvotes: {
+        type: Array
+      }
     }
+  },
+  {
+    id: false
   }
-}, {
-  id: false
-})
+)
 
 commentSchema.set('toObject', { virtuals: true })
 commentSchema.set('toJSON', { virtuals: true })
@@ -43,6 +54,12 @@ commentSchema.virtual('author', {
   foreignField: 'name',
   justOne: true
 })
+
+commentSchema.statics.paginate = function (query, opt) {
+  let defs = Object.assign({}, { page: 1, per_page: 20 }, opt)
+  const offset = (parseInt(defs.page, 10) - 1) * parseInt(defs.per_page)
+  return this.find(query).sort(opt.sort).skip(offset).limit(parseInt(defs.per_page))
+}
 
 commentSchema.pre('save', (next) => {
   next()

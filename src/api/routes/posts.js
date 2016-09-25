@@ -7,8 +7,10 @@ const router = new Router()
 router
   .get('/', posts.listPost)
   .post('/', posts.addPost)
+  .get('/:pid/comment', comments.listPostComment)
+  .post('/:pid/comment', comments.addComment)
   .get('/:pid', posts.getPost)
   .put('/:pid', posts.updatePost)
-  .get('/:pid/comments', comments.postComment)
+  .del('/:pid', posts.deletePost)
 
 export default router
