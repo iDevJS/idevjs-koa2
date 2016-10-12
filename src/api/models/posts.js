@@ -13,6 +13,14 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  sticky: {
+    type: Boolean,
+    default: false
+  },
+  recommend: {
+    type: Boolean,
+    default: false
+  },
   author_name: {
     type: String,
     required: true
@@ -33,6 +41,9 @@ const postSchema = new mongoose.Schema({
   updated_at: {
     type: Date,
     default: Date.now
+  },
+  client_id: {
+    type: String
   },
   meta: {
     views: {
@@ -90,6 +101,8 @@ postSchema.statics.paginate = function (query, opt) {
     query.recommend = true
   } else if (opt.tab === 'job') {
     query.tab = 'job'
+  } else {
+    query.tab = opt.tab
   }
 
   // since, before, one day/week/month

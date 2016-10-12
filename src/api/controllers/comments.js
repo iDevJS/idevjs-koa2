@@ -1,11 +1,13 @@
 import Comment from '../models/comments'
 import Post from '../models/posts'
-import {AUTHOR_POPULATE_OPTION} from '../consts'
+import User from '../models/users'
+import { AUTHOR_POPULATE_OPTION } from '../consts'
 
 export default {
   addComment: async (ctx, next) => {
     const comment = new Comment(Object.assign({}, ctx.request.body, {
-      pid: ctx.params.pid
+      pid: ctx.params.pid,
+      uid: ctx.state.user._id
     }))
     try {
       await comment.save()
@@ -17,6 +19,12 @@ export default {
 
       await Post.findByIdAndUpdate(
         ctx.params.pid,
+        { $inc: { 'meta.comments': 1 } },
+        { new: true }
+      )
+
+      await User.findByIdAndUpdate(
+        ctx.user._id,
         { $inc: { 'meta.comments': 1 } },
         { new: true }
       )
@@ -43,6 +51,12 @@ export default {
 
       await Post.findByIdAndUpdate(
         ctx.params.pid,
+        { $inc: { 'meta.comments': -1 } },
+        { new: true }
+      )
+
+      await User.findByIdAndUpdate(
+        ctx.user._id,
         { $inc: { 'meta.comments': -1 } },
         { new: true }
       )

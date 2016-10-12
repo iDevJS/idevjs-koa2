@@ -5,10 +5,12 @@ import nodes from './nodes'
 import comments from './comments'
 import settings from './settings'
 import notifications from './notifications'
+import Init from '../controllers/init'
 
 const router = new Router()
 
 router
+  .get('/init', Init)
   .use('/post', posts.routes(), posts.allowedMethods())
   .use('/user', users.routes(), users.allowedMethods())
   .use('/node', nodes.routes(), nodes.allowedMethods())

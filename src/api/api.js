@@ -4,7 +4,7 @@ import compress from 'koa-compress'
 import bodyParser from 'koa-bodyparser'
 import mongoose from 'mongoose'
 import config from './config/dev'
-import log from './middlewares/logger'
+import Authorization from './middlewares/Authorization'
 import errorMiddleware from './middlewares/error'
 import router from './routes/index'
 
@@ -18,8 +18,7 @@ const api = new Koa()
 if (env !== 'test') api.use(logger())
 api.use(bodyParser())
 api.use(compress())
-
-api.use(log)
+api.use(Authorization())
 api.use(errorMiddleware())
 api.use(router.routes())
 

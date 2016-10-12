@@ -6,27 +6,29 @@ import {POST_POPULATE_OPTION} from '../consts'
 export default {
   getPost: async (ctx, next) => {
     const query = ctx.query
-    await Post.findByIdAndUpdate(
-      ctx.params.pid,
-      {
-        $inc: { 'meta.views': 1 }
-      }, {
-        new: true
-      }
-    )
-      .populate(POST_POPULATE_OPTION)
-      .exec()
-      .then(ret => {
-        if (query.content_format !== 'markdown') {
-          ret.content = marked(ret.content)
+    try {
+      await Post.findByIdAndUpdate(
+        ctx.params.pid,
+        {
+          $inc: { 'meta.views': 1 }
+        }, {
+          new: true
         }
-        ctx.body = ret
-      }).catch(err => {
-        ctx.body = err
-      })
+      )
+        .populate(POST_POPULATE_OPTION)
+        .exec()
+        .then(ret => {
+          if (query.content_format !== 'markdown') {
+            ret.content = marked(ret.content)
+          }
+          ctx.body = ret
+        })
+    } catch (err) {
+      ctx.body = err
+    }
   },
   addPost: async (ctx, next) => {
-    const post = new Post(ctx.request.body)
+    const post = new Post({...ctx.request.body, author_name: ctx.state.user.name})
     try {
       await post.save()
         .then(ret => {

@@ -1,0 +1,15 @@
+{
+  "parser": "babel-eslint",
+  "extends": "standard",
+  "parserOptions": {
+    // "ecmaVersion": 6,
+    // "sourceType": "module",
+    "ecmaFeatures": {
+      "arrowFunctions": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "plugins": [
+    "standard"
+  ]
+}

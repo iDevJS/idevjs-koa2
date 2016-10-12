@@ -3,6 +3,9 @@ import mongoose from 'mongoose'
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   name: { type: String, required: true, unique: true, index: true },
+  password: { type: String, required: true },
+  alias: { type: String },
+  avatar_url: { type: String },
   bio: { type: String },
   location: { type: String },
   company: { type: String },
@@ -24,6 +27,10 @@ const userSchema = new mongoose.Schema({
       default: 0
     },
     posts: {
+      type: Number,
+      default: 0
+    },
+    comments: {
       type: Number,
       default: 0
     }
