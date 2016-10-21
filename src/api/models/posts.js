@@ -93,16 +93,19 @@ postSchema.statics.paginate = function (query, opt) {
   const offset = (parseInt(defs.page, 10) - 1) * parseInt(defs.per_page)
 
   let sort = { last_comment_at: -1, updated_at: -1 }
-  if (opt.tab === 'hot') {
+  if (defs.tab === 'hot') {
     sort = { 'meta.comments': -1 }
-  } else if (opt.tab === 'new') {
+  } else if (defs.tab === 'new') {
     sort = { created_at: -1 }
-  } else if (opt.tab === 'recommend') {
+  } else if (defs.tab === 'recommend') {
     query.recommend = true
-  } else if (opt.tab === 'job') {
+  } else if (defs.tab === 'job') {
     query.tab = 'job'
   } else {
-    query.tab = opt.tab
+    query.tab = defs.tab
+  }
+  if (!defs.tab) {
+    delete query.tab
   }
 
   // since, before, one day/week/month

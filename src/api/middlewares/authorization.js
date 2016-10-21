@@ -7,6 +7,10 @@ export default () => {
     let clientId = ctx.query.client_id
     let headerToken = ctx.get('authorization')
     let bearerToken = headerToken && headerToken.match(/Bearer\s(\S+)/)[1]
+    if (!clientId && !bearerToken) {
+      ctx.body = 'client_id or access_token required'
+      return
+    }
     try {
       if (bearerToken) {
         await Token.findOne({
@@ -14,6 +18,7 @@ export default () => {
         })
           .populate(TOKEN_POPULATE_OPTION)
           .then(ret => {
+            console.log(ret)
             ctx.state.access_token = ret
             ctx.state.client = ret.client
             ctx.state.user = ret.user
@@ -24,8 +29,6 @@ export default () => {
         ).then(ret => {
           ctx.state.client = ret
         })
-      } else {
-        ctx.throw('client_id or access_token required')
       }
       await next()
     } catch (err) {

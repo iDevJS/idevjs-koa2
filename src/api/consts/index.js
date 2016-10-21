@@ -14,7 +14,7 @@ const TOKEN_POPULATE_OPTION = [
   {
     path: 'user', select: USER_SELECT
   }, {
-    path: 'client_id'
+    path: 'client'
   }
 ]
 

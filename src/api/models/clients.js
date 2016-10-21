@@ -1,6 +1,10 @@
 import mongoose from 'mongoose'
 
 const clientSchema = new mongoose.Schema({
+  client_id: {
+    type: String,
+    required: true
+  },
   client_secret: {
     type: String,
     required: true
@@ -43,7 +47,10 @@ const clientSchema = new mongoose.Schema({
     default: Date.now
   },
   meta: {
-    users: { type: Number, default: 0 }
+    users: {
+      type: Number,
+      default: 0
+    }
   }
 })
 

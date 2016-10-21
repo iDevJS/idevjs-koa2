@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-const Schema = mongoose.Schema
 
 const tokenSchema = new mongoose.Schema({
   access_token: {
@@ -14,9 +13,8 @@ const tokenSchema = new mongoose.Schema({
     type: String
   },
   client_id: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'Client'
+    type: String,
+    required: true
   },
   scope: {
     type: String,
@@ -43,12 +41,12 @@ const tokenSchema = new mongoose.Schema({
 tokenSchema.set('toObject', { virtuals: true })
 tokenSchema.set('toJSON', { virtuals: true })
 
-// tokenSchema.virtual('client', {
-//   ref: 'Client',
-//   localField: 'client_id',
-//   foreignField: '_id',
-//   justOne: true
-// })
+tokenSchema.virtual('client', {
+  ref: 'Client',
+  localField: 'client_id',
+  foreignField: 'client_id',
+  justOne: true
+})
 
 tokenSchema.virtual('user', {
   ref: 'User',

@@ -2,6 +2,7 @@
 logs
 *.log
 npm-debug.log*
+typings
 
 # Runtime data
 pids
@@ -32,5 +33,5 @@ node_modules
 # app // compiled js
 app
 
-# VSCODE 
+# VSCODE
 #.vscode

@@ -41,7 +41,6 @@ export default async (ctx, next) => {
       .then(ret => {
 
       })
-
   } catch (err) {
     ctx.body = err
   }
