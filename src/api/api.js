@@ -2,9 +2,11 @@ import Koa from 'koa'
 import logger from 'koa-logger'
 import compress from 'koa-compress'
 import bodyParser from 'koa-bodyparser'
+import cors from 'kcors'
 import mongoose from 'mongoose'
 import config from './config/dev'
-import Authorization from './middlewares/Authorization'
+import authorization from './middlewares/authorization'
+import ratelimit from './middlewares/ratelimit'
 import errorMiddleware from './middlewares/error'
 import router from './routes/index'
 
@@ -16,10 +18,12 @@ const env = process.env.NODE_ENV || 'development'
 const api = new Koa()
 
 if (env !== 'test') api.use(logger())
-api.use(bodyParser())
-api.use(compress())
-api.use(Authorization())
 api.use(errorMiddleware())
+api.use(cors())
+api.use(bodyParser())
+api.use(authorization())
+api.use(ratelimit())
+api.use(compress())
 api.use(router.routes())
 
 export default api

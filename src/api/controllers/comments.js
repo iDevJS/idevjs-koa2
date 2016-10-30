@@ -24,7 +24,7 @@ export default {
       )
 
       await User.findByIdAndUpdate(
-        ctx.user._id,
+        ctx.state.user._id,
         { $inc: { 'meta.comments': 1 } },
         { new: true }
       )
@@ -33,7 +33,7 @@ export default {
     }
   },
   deleteComment: async (ctx, next) => {
-    if (!ctx.user.node_admin) {
+    if (!ctx.state.user.node_admin) {
       ctx.throw('May the force be with u.')
     }
     try {
@@ -45,7 +45,7 @@ export default {
         }
       )
       let post = await Post.findById(comment.pid)
-      if (ctx.user.owned_nodes.indexOf(post.node_name) === -1) {
+      if (ctx.state.user.owned_nodes.indexOf(post.node_name) === -1) {
         ctx.throw('no force detected.')
       }
 
@@ -56,7 +56,7 @@ export default {
       )
 
       await User.findByIdAndUpdate(
-        ctx.user._id,
+        ctx.state.user._id,
         { $inc: { 'meta.comments': -1 } },
         { new: true }
       )
@@ -68,9 +68,9 @@ export default {
     const type = ctx.query.type || 'upvote'
     let item = {}
     if (type === 'upvote') {
-      item = { upvotes: ctx.user.name }
+      item = { upvotes: ctx.state.user.name }
     } else {
-      item = { downvotes: ctx.user.name }
+      item = { downvotes: ctx.state.user.name }
     }
 
     await Comment.findByIdAndUpdate(

@@ -1,11 +1,16 @@
 {
   "apps": [
     {
-      "name": "api-app",
+      "name": "api",
       "script": "./src/babel.app.js",
+      // "instances": "max",
+      "exec_mode": "cluster",
       "watch": [
         "src/"
       ],
+      "error_file": "logs/err.log",
+      "out_file": "logs/out.log",
+      "log_date_format": "YYYY-MM-DD HH:mm Z",
       "env": {
         "NODE_ENV": "development"
       },

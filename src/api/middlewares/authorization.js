@@ -1,38 +1,29 @@
-import Client from '../models/clients'
+import Redis from '../controllers/redis'
 import Token from '../models/tokens'
 import { TOKEN_POPULATE_OPTION } from '../consts'
 
 export default () => {
   return async (ctx, next) => {
-    let clientId = ctx.query.client_id
     let headerToken = ctx.get('authorization')
     let bearerToken = headerToken && headerToken.match(/Bearer\s(\S+)/)[1]
-    if (!clientId && !bearerToken) {
-      ctx.body = 'client_id or access_token required'
-      return
-    }
-    try {
-      if (bearerToken) {
-        await Token.findOne({
+    if (bearerToken) {
+      let token = await Redis.cache.token.get(bearerToken)
+      if (!token) {
+        token = await Token.findOne({
           access_token: bearerToken
         })
           .populate(TOKEN_POPULATE_OPTION)
-          .then(ret => {
-            console.log(ret)
-            ctx.state.access_token = ret
-            ctx.state.client = ret.client
-            ctx.state.user = ret.user
-          })
-      } else if (clientId) {
-        await Client.findById(
-          clientId
-        ).then(ret => {
-          ctx.state.client = ret
-        })
+
+        if (token) {
+          Redis.cache.token.set(bearerToken, token)
+        }
+      } else {
+        token = JSON.parse(token)
       }
-      await next()
-    } catch (err) {
-      ctx.body = err
+      ctx.state.accessToken = token
+      ctx.state.client = token.client
+      ctx.state.user = token.user
     }
+    await next()
   }
 }
