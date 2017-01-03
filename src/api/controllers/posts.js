@@ -2,32 +2,28 @@ import marked from 'marked'
 import User from '../models/users'
 import Post from '../models/posts'
 import Node from '../models/nodes'
-import {POST_POPULATE_OPTION} from '../consts'
+import { POST_POPULATE_OPTION } from '../consts'
 
 export default {
   getPost: async (ctx, next) => {
     const query = ctx.query
-    try {
-      await Post.findByIdAndUpdate(
-        ctx.params.pid,
-        {
-          $inc: { 'meta.views': 1 }
-        }, {
-          new: true
+    await Post.findByIdAndUpdate(
+      ctx.params.pid,
+      {
+        $inc: { 'meta.views': 1 }
+      }, {
+        new: true
+      }
+    )
+      .populate(POST_POPULATE_OPTION)
+      .exec()
+      .then(ret => {
+        if (query.content_format !== 'markdown') {
+          ret.content = marked(ret.content)
         }
-      )
-        .populate(POST_POPULATE_OPTION)
-        .exec()
-        .then(ret => {
-          if (query.content_format !== 'markdown') {
-            ret.content = marked(ret.content)
-          }
-          ctx.body = ret
-        })
-      await next()
-    } catch (err) {
-      ctx.body = err
-    }
+        ctx.body = ret
+      })
+    await next()
   },
   addPost: async (ctx, next) => {
     const post = new Post({
@@ -35,43 +31,40 @@ export default {
       author_name: ctx.state.user.name,
       client_id: ctx.state.client._id
     })
-    try {
-      await post.save()
-        .then(ret => {
-          return Post.populate(ret, POST_POPULATE_OPTION)
-        })
-        .then(ret => {
-          ctx.body = ret
-        })
-      await Node.findOneAndUpdate({
-        name: ctx.request.body.node_name
-      },
-        {
-          $inc: {
-            'meta.posts': 1
-          }
-        }, {
-          new: true
-        })
-      await User.findOneAndUpdate({
-        name: ctx.state.user.name
-      }, {
-        $inc: {
-          'meta.posts': 1
-        }
-      }, {
-        new: true
-      })
-      await next()
-    } catch (err) {
-      ctx.body = err
-    }
+    await post.save()
+    .then(ret => {
+      return Post.populate(ret, POST_POPULATE_OPTION)
+    })
+    .then(ret => {
+      ctx.body = ret
+    })
+
+    await Node.findOneAndUpdate({
+      name: ctx.request.body.node_name
+    }, {
+      $inc: {
+        'meta.posts': 1
+      }
+    }, {
+      new: true
+    })
+
+    await User.findOneAndUpdate({
+      name: ctx.state.user.name
+    }, {
+      $inc: {
+        'meta.posts': 1
+      }
+    }, {
+      new: true
+    })
+    await next()
   },
   updatePost: async (ctx, next) => {
     const body = ctx.request.body
     let post = Post.findById(
-        ctx.params.pid
-      )
+      ctx.params.pid
+    )
     if (post.author_name !== ctx.state.user.name) {
       ctx.body = 'no force'
       return
@@ -97,34 +90,23 @@ export default {
       })
   },
   deletePost: async (ctx, next) => {
-    try {
-      await Post.findByIdAndUpdate(
-        ctx.params.pid,
-        {
-          $set: {
-            hidden: true
-          }
-        }, {
-          new: true
+    await Post.findByIdAndUpdate(
+      ctx.params.pid,
+      {
+        $set: {
+          hidden: true
         }
-      ).then(ret => {
-        ctx.body = ret
-      })
-
-      await Node.findOneAndUpdate({
-        name: ctx.request.body.node_name
-      },
-        {
-          $inc: {
-            'meta.posts': -1
-          }
-        }, {
-          new: true
-        })
-
-      await User.findOneAndUpdate({
-        name: ctx.state.user.name
       }, {
+        new: true
+      }
+    ).then(ret => {
+      ctx.body = ret
+    })
+
+    await Node.findOneAndUpdate({
+      name: ctx.request.body.node_name
+    },
+      {
         $inc: {
           'meta.posts': -1
         }
@@ -132,10 +114,17 @@ export default {
         new: true
       })
 
-      await next()
-    } catch (err) {
-      ctx.body = err
-    }
+    await User.findOneAndUpdate({
+      name: ctx.state.user.name
+    }, {
+      $inc: {
+        'meta.posts': -1
+      }
+    }, {
+      new: true
+    })
+
+    await next()
   },
   listPost: async (ctx, next) => {
     const query = ctx.query
