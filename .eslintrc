@@ -8,8 +8,8 @@
       "arrowFunctions": true,
       "experimentalObjectRestSpread": true
     }
-  },
-  "plugins": [
-    "standard"
-  ]
+  }
+  // "plugins": [
+  //   "standard"
+  // ]
 }

@@ -1,4 +1,5 @@
 import Router from 'koa-router'
+import auth from '../middlewares/authorization'
 import posts from '../controllers/posts'
 import comments from '../controllers/comments'
 
@@ -6,11 +7,11 @@ const router = new Router()
 
 router
   .get('/', posts.listPost)
-  .post('/', posts.addPost)
-  .get('/:pid/comment', comments.listPostComment)
-  .post('/:pid/comment', comments.addComment)
+  .post('/', auth(), posts.addPost)
+  .get('/:pid/comments', comments.listPostComment)
+  .post('/:pid/comments', auth(), comments.addComment)
   .get('/:pid', posts.getPost)
-  .put('/:pid', posts.updatePost)
-  .del('/:pid', posts.deletePost)
+  .put('/:pid', auth(), posts.updatePost)
+  .del('/:pid', auth(), posts.deletePost)
 
 export default router

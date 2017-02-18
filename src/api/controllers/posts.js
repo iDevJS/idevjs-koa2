@@ -4,6 +4,30 @@ import Post from '../models/posts'
 import Node from '../models/nodes'
 import { POST_POPULATE_OPTION } from '../consts'
 
+const updateUserPostCount = async (name, num) => {
+  await User.findOneAndUpdate({
+    name: name
+  }, {
+    $inc: {
+      'meta.posts': num
+    }
+  }, {
+    new: true
+  })
+}
+
+const updateNodePostCount = async (name, num) => {
+  await Node.findOneAndUpdate({
+    name: name
+  }, {
+    $inc: {
+      'meta.posts': num
+    }
+  }, {
+    new: true
+  })
+}
+
 export default {
   getPost: async (ctx, next) => {
     const query = ctx.query
@@ -39,25 +63,9 @@ export default {
       ctx.body = ret
     })
 
-    await Node.findOneAndUpdate({
-      name: ctx.request.body.node_name
-    }, {
-      $inc: {
-        'meta.posts': 1
-      }
-    }, {
-      new: true
-    })
-
-    await User.findOneAndUpdate({
-      name: ctx.state.user.name
-    }, {
-      $inc: {
-        'meta.posts': 1
-      }
-    }, {
-      new: true
-    })
+    await updateNodePostCount(ctx.request.body.node_name, 1)
+    await updateUserPostCount(ctx.state.user.name, 1)
+   
     await next()
   },
   updatePost: async (ctx, next) => {
@@ -103,26 +111,8 @@ export default {
       ctx.body = ret
     })
 
-    await Node.findOneAndUpdate({
-      name: ctx.request.body.node_name
-    },
-      {
-        $inc: {
-          'meta.posts': -1
-        }
-      }, {
-        new: true
-      })
-
-    await User.findOneAndUpdate({
-      name: ctx.state.user.name
-    }, {
-      $inc: {
-        'meta.posts': -1
-      }
-    }, {
-      new: true
-    })
+    await updateNodePostCount(ctx.request.body.node_name, -1)
+    await updateUserPostCount(ctx.state.user.name, -1)
 
     await next()
   },

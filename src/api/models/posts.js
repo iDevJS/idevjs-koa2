@@ -31,7 +31,7 @@ const postSchema = new mongoose.Schema({
   },
   content_format: {
     type: String,
-    required: true,
+    default: 'markdown',
     enum: ['html', 'markdown']
   },
   created_at: {

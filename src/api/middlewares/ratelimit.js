@@ -2,8 +2,8 @@ import Redis from '../controllers/redis'
 
 const config = {
   token: {
-    limit: 5,
-    remaining: 5,
+    limit: 50,
+    remaining: 50,
     expires: 60
   },
   ip: {
@@ -27,7 +27,7 @@ export default () => {
 
     let ratelimit = await Redis.ratelimit.get(typeName)
     if (Object.keys(ratelimit).length > 0) {
-      if (+ratelimit.remaining === 0) {
+      if (+ratelimit.remaining < 0) {
         ctx.throw('ratelimit:outofuse')
       }
       Redis.ratelimit.decr(typeName)

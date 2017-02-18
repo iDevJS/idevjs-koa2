@@ -3,11 +3,28 @@ import Post from '../models/posts'
 import User from '../models/users'
 import { AUTHOR_POPULATE_OPTION } from '../consts'
 
+const updatePostCommentCount = async (pid, num) => {
+  await Post.findByIdAndUpdate(
+    pid,
+    { $inc: { 'meta.comments': num } },
+    { new: true }
+  )
+}
+
+const updateUserCommentCount = async (uid, num) => {
+  await User.findByIdAndUpdate(
+    uid,
+    { $inc: { 'meta.comments': num } },
+    { new: true }
+  )
+}
+
 export default {
   addComment: async (ctx, next) => {
     const comment = new Comment(Object.assign({}, ctx.request.body, {
       pid: ctx.params.pid,
-      uid: ctx.state.user._id
+      author_name: ctx.state.user.name,
+      client_id: ctx.state.client._id
     }))
     try {
       await comment.save()
@@ -17,17 +34,9 @@ export default {
           ctx.body = ret
         })
 
-      await Post.findByIdAndUpdate(
-        ctx.params.pid,
-        { $inc: { 'meta.comments': 1 } },
-        { new: true }
-      )
-
-      await User.findByIdAndUpdate(
-        ctx.state.user._id,
-        { $inc: { 'meta.comments': 1 } },
-        { new: true }
-      )
+      await updatePostCommentCount(ctx.params.pid, 1)
+      await updateUserCommentCount(ctx.state.user._id, 1)
+      await next()
     } catch (err) {
       ctx.body = err
     }
@@ -49,17 +58,9 @@ export default {
         ctx.throw('no force detected.')
       }
 
-      await Post.findByIdAndUpdate(
-        ctx.params.pid,
-        { $inc: { 'meta.comments': -1 } },
-        { new: true }
-      )
-
-      await User.findByIdAndUpdate(
-        ctx.state.user._id,
-        { $inc: { 'meta.comments': -1 } },
-        { new: true }
-      )
+      await updatePostCommentCount(ctx.params.pid, -1)
+      await updateUserCommentCount(ctx.state.user._id, -1)
+      await next()
     } catch (err) {
       ctx.body = err
     }

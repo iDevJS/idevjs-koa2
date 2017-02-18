@@ -11,11 +11,11 @@ const router = new Router()
 
 router
   .get('/init', Init)
-  .use('/post', posts.routes(), posts.allowedMethods())
-  .use('/user', users.routes(), users.allowedMethods())
-  .use('/node', nodes.routes(), nodes.allowedMethods())
-  .use('/comment', comments.routes(), comments.allowedMethods())
-  .use('/setting', settings.routes(), settings.allowedMethods())
-  .use('/notification', notifications.routes(), notifications.allowedMethods())
+  .use('/posts', posts.routes(), posts.allowedMethods())
+  .use('/users', users.routes(), users.allowedMethods())
+  .use('/nodes', nodes.routes(), nodes.allowedMethods())
+  .use('/comments', comments.routes(), comments.allowedMethods())
+  .use('/settings', settings.routes(), settings.allowedMethods())
+  .use('/notifications', notifications.routes(), notifications.allowedMethods())
 
 export default router

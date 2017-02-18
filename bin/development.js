@@ -15,7 +15,8 @@ var watcher = chokidar.watch(path.join(__dirname, '../src'))
 watcher.on('ready', function () {
   log('Compiling...'.green)
   babelCliDir({ outDir: 'app/', retainLines: true, sourceMaps: true }, [ 'src/' ]) // compile all when start
-  // require('../app') // start app
+  require("babel-polyfill")
+  require('../app') // start app
   log('♪ App Started'.green)
 
   watcher

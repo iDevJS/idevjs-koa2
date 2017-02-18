@@ -5,7 +5,8 @@ import posts from '../controllers/posts'
 const router = new Router()
 
 router
+  .get('/', nodes.list)
   .get('/:node', nodes.nodeDetail)
-  .get('/:node/post', posts.listNodePost)
+  .get('/:node/posts', posts.listNodePost)
 
 export default router

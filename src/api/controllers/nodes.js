@@ -2,6 +2,12 @@ import Node from '../models/nodes'
 import marked from 'marked'
 
 export default {
+  list: async (ctx, next) => {
+    await Node.find()
+      .then(ret => {
+        ctx.body = ret
+      })
+  },
   updateNode: async (ctx, next) => {
     const body = ctx.request.body
     await Node.findOneAndUpdate(

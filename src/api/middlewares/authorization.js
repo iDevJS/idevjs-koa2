@@ -16,6 +16,7 @@ export default () => {
 
         if (token) {
           Redis.cache.token.set(bearerToken, token)
+
         }
       } else {
         token = JSON.parse(token)
